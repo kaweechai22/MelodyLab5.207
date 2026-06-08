@@ -1009,3 +1009,58 @@ main.wrap{
     grid-column: 2 !important;
   }
 }
+
+
+/* v5.22 fixed visualizer menu list */
+.detailPage.page-visualizer main > section.visualizerMenuPage{
+  display:block !important;
+}
+.visualizerMenuPage .sectionHead{
+  margin-bottom:10px;
+}
+.visualizerMenuPage .visualizerSubGrid{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:10px !important;
+}
+.visualizerMenuPage .vizSubItem{
+  display:grid;
+  grid-template-columns:46px 1fr;
+  align-items:center;
+  min-height:86px !important;
+  padding:12px 14px !important;
+  border-radius:18px !important;
+}
+.visualizerMenuPage .vizSubItem .icon{
+  font-size:1.45rem !important;
+  margin:0 !important;
+}
+.visualizerMenuPage .vizSubItem h3{
+  font-size:.98rem !important;
+  line-height:1.18 !important;
+  margin:0 0 4px !important;
+}
+.visualizerMenuPage .vizSubItem p{
+  font-size:.76rem !important;
+  line-height:1.25 !important;
+  margin:0 !important;
+  color:var(--muted);
+}
+@media (orientation: landscape) and (max-width:950px){
+  .visualizerMenuPage .visualizerSubGrid{
+    grid-template-columns:1fr 1fr !important;
+  }
+  .visualizerMenuPage .vizSubItem{
+    min-height:74px !important;
+  }
+  .visualizerMenuPage .vizSubItem h3{
+    font-size:.86rem !important;
+  }
+  .visualizerMenuPage .vizSubItem p{
+    font-size:.66rem !important;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+}

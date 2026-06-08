@@ -184,3 +184,10 @@
 - แนวตั้ง: main visualizer อยู่บน player bar อยู่ใต้กราฟ และพารามิเตอร์จัด 2 คอลัมน์
 - แนวนอน: main visualizer อยู่ซ้าย พารามิเตอร์อยู่ขวา ขยายพื้นที่ภาพจำลอง
 - เพิ่มการ resize canvas ตาม orientation และ redraw หลังหมุนจอ
+
+
+## v5.22 Fix Visualizer Menu
+
+- แก้หน้า Wave Visualizer ให้แสดงหัวข้อย่อยครบ
+- หัวข้อย่อยเรียงเป็นรายการเหมือนหน้า Home
+- กดแล้วเข้า visualizer subpage ของหัวข้อนั้น
