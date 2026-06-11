@@ -1316,14 +1316,14 @@ function drawVizLegend(ctx,c){
 function getSpeedSoundParams(){
   const d = Number($("vizDistance")?.value || 5);
   const T = Number($("vizTemp")?.value || 20);
-  const timeScale = Number($("vizTimeSpeed")?.value || 1);
+  const timeScale = Number($("vizTimeSpeed")?.value || 0.10);
   const v = 331 + 0.6 * T;
   const dt = d / v;
   if($("vizDistanceLabel")) $("vizDistanceLabel").textContent = d.toFixed(1) + " m";
   if($("vizTempLabel")) $("vizTempLabel").textContent = T.toFixed(0) + " °C";
   if($("vizSoundSpeedLabel")) $("vizSoundSpeedLabel").textContent = v.toFixed(1) + " m/s";
   if($("vizTravelTimeLabel")) $("vizTravelTimeLabel").textContent = (dt * 1000).toFixed(1) + " ms";
-  if($("vizTimeLabel")) $("vizTimeLabel").textContent = timeScale.toFixed(2).replace(/\.00$/,".0") + "×";
+  if($("vizTimeLabel")) $("vizTimeLabel").textContent = timeScale.toFixed(2) + "×";
   return {d,T,v,dt,timeScale};
 }
 
@@ -1461,7 +1461,8 @@ function drawSpeedOfSoundTeachingFinal(ctx, c, pUnused, w, h){
   ctx.fillText("แหล่งกำเนิดเสียง", sourceX, midY+64);
   ctx.fillText("ไมโครโฟน", micX, midY+64);
 
-  const elapsed = Math.min(vizState.t*0.016*p.timeScale, p.dt);
+  const displaySlowFactor = 10; // v5.95 slow-motion display only; physics values stay real
+  const elapsed = Math.min((vizState.t*0.016*p.timeScale)/displaySlowFactor, p.dt);
   const frac = Math.min(1, p.dt>0 ? elapsed/p.dt : 0);
   const pulseX = lineStart + pathW*frac;
   const reached = frac >= 0.999;
@@ -1520,14 +1521,14 @@ function drawSpeedOfSoundTeachingFinal(ctx, c, pUnused, w, h){
   ctx.setLineDash([]);
   ctx.font="bold 18px Sarabun, system-ui, sans-serif";
   ctx.textAlign="center";
-  ctx.fillText(`ระยะทาง d = ${p.d.toFixed(1)} m`, (lineStart+lineEnd)/2, arrowY+30);
+  ctx.fillText(`ระยะทาง s = ${p.d.toFixed(1)} m`, (lineStart+lineEnd)/2, arrowY+30);
   ctx.restore();
 
   const badgeY = panelY + panelH - 132;
   const bW = Math.min(180, (panelW-58)/3);
   drawTeachingBadge(ctx, panelX+24, badgeY, bW, 58, "เวลาที่วัดได้", `${(elapsed*1000).toFixed(1)} ms`, "rgba(34,211,238,.58)");
   drawTeachingBadge(ctx, panelX+34+bW, badgeY, bW, 58, "อัตราเร็วเสียง", `${p.v.toFixed(1)} m/s`, "rgba(52,211,153,.58)");
-  drawTeachingBadge(ctx, panelX+44+bW*2, badgeY, bW, 58, "ความสัมพันธ์", "v = d / Δt", "rgba(168,85,247,.58)");
+  drawTeachingBadge(ctx, panelX+44+bW*2, badgeY, bW, 58, "ความสัมพันธ์", "v = s / Δt", "rgba(168,85,247,.58)");
 
   if(reached){
     const glow=ctx.createRadialGradient(micX,midY,6,micX,midY,48);
@@ -1572,7 +1573,8 @@ function drawVisualizer(){
     drawSpeedOfSoundTeachingFinal(ctx,c,p,W,H);
     if(vizState.running){
       const ps = getSpeedSoundParams();
-      const elapsed = vizState.t * 0.016 * ps.timeScale;
+      const displaySlowFactor = 10;
+      const elapsed = (vizState.t * 0.016 * ps.timeScale) / displaySlowFactor;
       const resetAt = Math.max(ps.dt + 0.45, 0.85);
       vizState.t = elapsed >= resetAt ? 0 : vizState.t + 1;
     }
@@ -1881,7 +1883,7 @@ function getLocalPageSnapshot(){
   if($("vizPhase")) row.parameter_phase_deg = Number($("vizPhase").value || 0);
   if($("vizPhaseDiff")) row.parameter_phase_difference_deg = Number($("vizPhaseDiff").value || 0);
   if($("vizSubMode")) row.parameter_mode = $("vizSubMode").value || "";
-  if($("vizDistance")) row.parameter_distance_m = Number($("vizDistance").value || 0);
+  if($("vizDistance")) { row.parameter_distance_m = Number($("vizDistance").value || 0); row.parameter_path_length_s_m = Number($("vizDistance").value || 0); }
   if($("vizTemp")) row.parameter_temperature_c = Number($("vizTemp").value || 0);
   if($("vizFreqLabel")) row.frequency_display = $("vizFreqLabel").textContent || "";
   if($("vizAmpLabel")) row.amplitude_display = $("vizAmpLabel").textContent || "";

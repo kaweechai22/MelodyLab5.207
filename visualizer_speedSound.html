@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MelodyLab v5.93 - Speed of Sound Matched Template</title><meta name="description" content="MelodyLab ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ"><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"><meta name="melodylab-build-version" content="v5.93-speed-of-sound-matched-template"></head><body class="detailPage page-visualizer"><header><div class="wrap nav detailNav"><button class="backBtn" onclick="location.href='visualizer.html'">←</button><a class="brand" href="index.html"><img src="icon-192.png" alt="MelodyLab"><span>Speed of Sound (อัตราเร็วเสียง)</span></a></div></header><main class="wrap detailMain" data-current="visualizer">
+<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MelodyLab v5.95 - Speed of Sound S Variable Slow Motion</title><meta name="description" content="MelodyLab ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ"><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"><meta name="melodylab-build-version" content="v5.95-speed-of-sound-s-variable-slow-motion"></head><body class="detailPage page-visualizer"><header><div class="wrap nav detailNav"><button class="backBtn" onclick="location.href='visualizer.html'">←</button><a class="brand" href="index.html"><img src="icon-192.png" alt="MelodyLab"><span>Speed of Sound (อัตราเร็วเสียง)</span></a></div></header><main class="wrap detailMain" data-current="visualizer">
 <section class="section activeDetail visualizerSinglePage visualizerTemplatePage longitudinalFocusPage speedSoundFocusPage" id="visualizer" data-viz-mode="speedSound">
   <div class="sectionHead templateHead">
     <div>
@@ -37,18 +37,19 @@
         <summary>คำอธิบายเพิ่มเติม</summary>
         <div class="detailsBody">
           <div class="vizConceptStrip compactExplainStrip">
-            <div class="conceptChip"><span class="chipIcon">d</span><div><b>Distance d (ระยะทาง)</b><small>ระยะจากแหล่งกำเนิดเสียงถึงไมโครโฟน</small></div></div>
+            <div class="conceptChip"><span class="chipIcon">d</span><div><b>Distance s (ระยะทาง)</b><small>ระยะจากแหล่งกำเนิดเสียงถึงไมโครโฟน</small></div></div>
             <div class="conceptChip"><span class="chipIcon">Δt</span><div><b>Travel Time (เวลาเดินทาง)</b><small>เวลาที่พัลส์เสียงใช้ในการเดินทางถึงปลายทาง</small></div></div>
-            <div class="conceptChip"><span class="chipIcon">v</span><div><b>Speed of Sound (อัตราเร็วเสียง)</b><small>ใช้ความสัมพันธ์ v = d / Δt</small></div></div>
+            <div class="conceptChip"><span class="chipIcon">v</span><div><b>Speed of Sound (อัตราเร็วเสียง)</b><small>ใช้ความสัมพันธ์ v = s / Δt</small></div></div>
             <div class="conceptChip accent"><span class="chipIcon">T</span><div><b>Temperature T (อุณหภูมิ)</b><small>อุณหภูมิส่งผลต่ออัตราเร็วเสียงในอากาศ</small></div></div>
           </div>
           <div class="templateUnderCanvas explainGrid">
             <div class="templateInsightCard">
               <div class="insightTitle">สิ่งที่สังเกตได้</div>
               <ul>
-                <li>เมื่อระยะทาง d มากขึ้น เวลาที่พัลส์เสียงเดินทาง Δt จะมากขึ้น</li>
+                <li>เมื่อระยะทาง s มากขึ้น เวลาที่พัลส์เสียงเดินทาง Δt จะมากขึ้น</li>
                 <li>เมื่ออุณหภูมิอากาศสูงขึ้น อัตราเร็วเสียง v จะเพิ่มขึ้น</li>
-                <li>ใช้ความสัมพันธ์ v = d / Δt เพื่อคำนวณอัตราเร็วเสียงได้</li>
+                <li>ใช้ความสัมพันธ์ v = s / Δt เพื่อคำนวณอัตราเร็วเสียงได้</li>
+                <li>ภาพจำลองชะลอเวลาเพื่อให้สังเกตการเดินทางของพัลส์เสียงได้ชัดเจน แต่ค่าที่คำนวณยังเป็นค่าฟิสิกส์จริง</li>
               </ul>
             </div>
             <div class="templateLegendCard">
@@ -65,8 +66,8 @@
       <div class="panelTitleStack"><h3>Parameters (ตัวแปรควบคุม)</h3><p class="panelSubtext">ปรับค่าแล้วสังเกตเวลาที่พัลส์เสียงเดินทางถึงไมโครโฟน</p></div>
 
       <div class="field richField neonParamRow distanceRow">
-        <div class="paramIcon">d</div>
-        <div class="paramText"><label>ระยะทาง</label><small>Distance d</small></div>
+        <div class="paramIcon">s</div>
+        <div class="paramText"><label>ระยะทาง</label><small>Distance s</small></div>
         <input id="vizDistance" type="range" min="1" max="20" step="0.5" value="5.0">
         <div class="paramValueWrap"><span id="vizDistanceLabel" class="valueBadge">5.0 m</span></div>
       </div>
@@ -87,8 +88,8 @@
       <div class="field richField neonParamRow timeRow">
         <div class="paramIcon">◷</div>
         <div class="paramText"><label>อัตราเวลา</label><small>Time Speed</small></div>
-        <input id="vizTimeSpeed" type="range" min="0.25" max="4.0" step="0.25" value="1.0">
-        <div class="paramValueWrap"><span id="vizTimeLabel" class="valueBadge">1.0×</span></div>
+        <input id="vizTimeSpeed" type="range" min="0.03" max="1.0" step="0.01" value="0.10">
+        <div class="paramValueWrap"><span id="vizTimeLabel" class="valueBadge">0.10×</span></div>
       </div>
 
       <div class="field richField neonParamRow travelTimeRow">
