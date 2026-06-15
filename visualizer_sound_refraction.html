@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MelodyLab v5.159 - Sound Refraction (การหักเหของเสียง)</title><meta name="description" content="MelodyLab ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ"><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"><meta name="melodylab-build-version" content="v5.159-sound-refraction-release-polish"></head><body class="detailPage page-visualizer"><header><div class="wrap nav detailNav"><button class="backBtn" onclick="location.href='visualizer.html'">←</button><a class="brand" href="index.html"><img src="icon-192.png" alt="MelodyLab"><span>Sound Refraction (การหักเหของเสียง)</span></a></div></header>
+<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MelodyLab v5.161 - Sound Refraction (การหักเหของเสียง)</title><meta name="description" content="MelodyLab ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ"><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"><meta name="melodylab-build-version" content="v5.161-sound-refraction-physics-audit-fix"></head><body class="detailPage page-visualizer"><header><div class="wrap nav detailNav"><button class="backBtn" onclick="location.href='visualizer.html'">←</button><a class="brand" href="index.html"><img src="icon-192.png" alt="MelodyLab"><span>Sound Refraction (การหักเหของเสียง)</span></a></div></header>
 <main class="wrap detailMain" data-current="visualizer">
 <section class="section activeDetail visualizerSinglePage visualizerTemplatePage longitudinalFocusPage rebuiltTopicPage" id="visualizer" data-viz-mode="soundRefraction">
   <div class="sectionHead templateHead">
@@ -36,7 +36,7 @@
             <ul>
               <li>ประมาณค่าความเร็วเสียงในอากาศด้วยความสัมพันธ์ v ≈ 331 + 0.6T เมื่อ T มีหน่วยเป็นองศาเซลเซียส</li>
               <li>ในโหมดหลายชั้น ใช้การประมาณอากาศเป็นชั้นบาง ๆ หลายชั้น โดยให้แต่ละคู่ชั้นเกิดการหักเหเล็กน้อยต่อเนื่องกัน</li>
-              <li>ในโหมดเกรเดียนใช้ภาพจำลองเชิงแนวคิดเพื่ออธิบายแนวโน้มการเบนของเสียงในบรรยากาศ</li>
+              <li>ในโหมดอุณหภูมิไล่ระดับต่อเนื่อง ใช้ภาพจำลองเชิงแนวคิดเพื่ออธิบายแนวโน้มการเบนของเสียงในบรรยากาศ</li>
               <li>ค่าตัวอย่างบางชุดตั้งให้เห็นการเบนชัดขึ้น เพื่อใช้สอนแนวคิดการเข้าหา/ออกจากเส้นแนวฉาก</li>
               <li>ขยายการเบน เป็นการขยายภาพเพื่อการสอนเท่านั้น ส่วนค่ามุมที่แสดงยังคำนวณจากหลักฟิสิกส์เดิม</li>
             </ul>
@@ -100,8 +100,8 @@
 <div class="field richField neonParamRow bendBoostRow">
         <div class="paramIcon">×</div>
         <div class="paramText"><label>ขยายการเบน</label><small>ขยายภาพการเบนเพื่อการสอน</small></div>
-        <input id="vizBendBoost" type="range" min="1" max="5" step="0.5" value="2.5">
-        <div class="paramValueWrap"><span id="vizBendBoostLabel" class="valueBadge">×2.5</span></div>
+        <input id="vizBendBoost" type="range" min="1" max="5" step="0.5" value="3.5">
+        <div class="paramValueWrap"><span id="vizBendBoostLabel" class="valueBadge">×3.5</span></div>
       </div>
 <div class="field richField neonParamRow timeRow">
         <div class="paramIcon">◷</div>

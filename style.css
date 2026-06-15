@@ -3031,3 +3031,17 @@ main.wrap{
     padding:9px 9px !important;
   }
 }
+
+
+/* v5.160 — make swapped temperature relation easier to notice */
+#visualizer[data-viz-mode="soundRefraction"] .tempSwapRow .valueBadge{
+  border-color:rgba(34,211,238,.30) !important;
+  color:#e0f2fe !important;
+}
+
+
+/* v5.161 — physics wording guardrails */
+#visualizer[data-viz-mode="soundRefraction"] .bendBoostRow .paramText small::after{
+  content:" ไม่ใช่ค่าการเบนจริง";
+  color:#fbbf24;
+}

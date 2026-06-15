@@ -318,7 +318,7 @@ function drawRebuiltTopic(ctx,c,p,w,h,mode){
     const profile=vSel("vizRefractionMode","layer");
     const preset=vSel("vizGradientPreset","auto");
     const layerCount=Math.round(vNum("vizLayerCount",6));
-    const bendBoost=vNum("vizBendBoost",2.5);
+    const bendBoost=vNum("vizBendBoost",3.5);
     const vTop = 331 + 0.6*tempTop;
     const vBottom = 331 + 0.6*tempBottom;
     const lambdaTop = vTop / Math.max(freq,1);
@@ -570,9 +570,9 @@ function drawRebuiltTopic(ctx,c,p,w,h,mode){
       ctx.font="bold 12px Sarabun, system-ui"; ctx.fillStyle = bottomHotter ? "#ff98a8" : "#4fdcff"; ctx.fillText(bottomHotter?"ด้านล่างอุณหภูมิสูงกว่า":"ด้านล่างอุณหภูมิต่ำกว่า", xL+16, bottom-74);
       ctx.font="11px Sarabun, system-ui"; ctx.fillText(`v(bottom) ≈ ${vBottom.toFixed(1)} m/s`, xL+16, bottom-52); ctx.fillText(`λ(bottom) ≈ ${lambdaBottom.toFixed(3)} m`, xL+16, bottom-31); ctx.restore();
       ctx.save(); ctx.fillStyle="rgba(10,22,50,.86)"; ctx.strokeStyle="rgba(96,165,250,.34)"; roundRect(ctx,panel.x+28,panel.y+26,124,30,12); ctx.fill(); ctx.stroke(); ctx.fillStyle="#dbeafe"; ctx.font="bold 14px Sarabun, system-ui"; ctx.textAlign="center"; ctx.fillText(`f = ${freq.toFixed(0)} Hz`, panel.x+90, panel.y+46); ctx.restore();
-      ctx.save(); ctx.fillStyle="rgba(13,26,53,.84)"; ctx.strokeStyle="rgba(251,191,36,.36)"; roundRect(ctx,panel.x+160,panel.y+26,174,30,12); ctx.fill(); ctx.stroke(); ctx.fillStyle="#ffd166"; ctx.font="bold 13px Sarabun, system-ui"; ctx.textAlign="center"; ctx.fillText(`ขยายภาพการเบน ×${bendBoost.toFixed(1)}`, panel.x+247, panel.y+46); ctx.restore();
+      ctx.save(); ctx.fillStyle="rgba(13,26,53,.84)"; ctx.strokeStyle="rgba(251,191,36,.36)"; roundRect(ctx,panel.x+160,panel.y+26,236,30,12); ctx.fill(); ctx.stroke(); ctx.fillStyle="#ffd166"; ctx.font="bold 12px Sarabun, system-ui"; ctx.textAlign="center"; ctx.fillText(`ขยายภาพ ×${bendBoost.toFixed(1)} (ไม่ใช่ค่าจริง)`, panel.x+278, panel.y+46); ctx.restore();
       ctx.save(); ctx.font="bold 12px Sarabun, system-ui"; ctx.textAlign="left"; ctx.fillStyle="#ff8fc2"; ctx.fillText("Multi-layer Ray", startX-12, startY-18); ctx.restore();
-      drawBadge(xR-218, top+44, 196, 106, `${N} ชั้น`, [`ΔT ≈ ${((Math.abs(tempBottom-tempTop))/Math.max(N-1,1)).toFixed(1)}°C/ชั้น`, "ความถี่คงเดิม", "λ เปลี่ยนตาม v"]);
+      drawBadge(xR-218, top+44, 196, 106, `${N} ชั้น`, [`ΔT ≈ ${((Math.abs(tempBottom-tempTop))/Math.max(N-1,1)).toFixed(1)}°C/ชั้น`, bottomHotter ? "θ ลดลง → เข้าหา Normal" : topHotter ? "θ เพิ่มขึ้น → ออกจาก Normal" : "อุณหภูมิเท่ากัน", "ขยายภาพเพื่อการสอน"]);
 
     } else {
       // gradient scene
@@ -582,20 +582,30 @@ function drawRebuiltTopic(ctx,c,p,w,h,mode){
         ctx.fillStyle=colorForTemp(T,.20); ctx.fillRect(xL,y,xR-xL,skyH/29+2);
       }
       ctx.fillStyle="rgba(110,72,56,.96)"; ctx.fillRect(xL,bottom-groundH,xR-xL,groundH);
-      if(effectivePreset==="night"){
-        ctx.fillStyle="rgba(10,16,74,.38)"; ctx.fillRect(xL,top,xR-xL,72); drawMoon(xR-36, top+26, 12); drawStar(xR-84, top+18, 5); drawStar(xR-130, top+28, 4); drawStar(xR-172, top+16, 4); ctx.fillStyle="#eef3ff"; ctx.font="bold italic 24px Sarabun, system-ui"; ctx.fillText("NIGHT", xL+14, top+28);
-      } else {
-        drawSun(xR-40, top+28, 12); ctx.fillStyle="#eefaff"; ctx.font="bold italic 24px Sarabun, system-ui"; ctx.fillText("DAY", xL+14, top+28);
-      }
+      ctx.save();
+      ctx.fillStyle="rgba(10,22,50,.30)";
+      ctx.fillRect(xL,top,xR-xL,58);
+      ctx.fillStyle="#eefaff";
+      ctx.font="bold 18px Sarabun, system-ui";
+      ctx.textAlign="left";
+      ctx.fillText(topHotter ? "Tบน สูงกว่า" : bottomHotter ? "Tล่าง สูงกว่า" : "T คงที่", xL+14, top+28);
+      ctx.restore();
       ctx.fillStyle="rgba(240,244,250,.86)"; ctx.font="bold 14px Sarabun, system-ui"; ctx.fillText("ground", xR-76, bottom-5);
       const srcX = xL+105, srcY = bottom-groundH-10; drawSpeaker(ctx, xL+14, srcY, .90);
       const p0 = {x:srcX, y:srcY};
       const p1 = {x:srcX + 128*Math.sin(theta1), y:srcY - 128*Math.cos(theta1)};
       let p2, p3;
-      if(effectivePreset==="night"){
-        p2 = {x:srcX + 344, y:srcY - 112}; p3 = {x:xR-88, y:srcY - 38};
+      const gradAmount = lim(Math.abs(tempBottom-tempTop)/45, 0, 1);
+      if(noRefraction){
+        p2 = {x:srcX + 330, y:srcY - 145}; p3 = {x:xR-92, y:srcY - 238};
+      } else if(effectivePreset==="night"){
+        // ด้านบนอุณหภูมิสูงกว่า / ใกล้พื้นเย็นกว่า → เสียงเบนลงใกล้พื้นชัดขึ้น
+        p2 = {x:srcX + 320, y:srcY - (92 + 24*gradAmount)};
+        p3 = {x:xR-88, y:srcY - (18 + 42*gradAmount)};
       } else {
-        p2 = {x:srcX + 362, y:srcY - 190}; p3 = {x:xR-92, y:top + 96};
+        // ด้านล่างอุณหภูมิสูงกว่า / ใกล้พื้นอุ่นกว่า → เสียงเบนขึ้นชัดขึ้น
+        p2 = {x:srcX + 360, y:srcY - (178 + 40*gradAmount)};
+        p3 = {x:xR-92, y:top + (108 - 40*gradAmount)};
       }
       // ray
       ctx.save(); ctx.strokeStyle="rgba(255,92,171,.98)"; ctx.lineWidth=4; ctx.lineCap="round"; ctx.lineJoin="round"; ctx.beginPath(); ctx.moveTo(p0.x,p0.y); ctx.bezierCurveTo(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y); ctx.stroke(); coreArrow(ctx,p3.x-42,p3.y-16,p3.x,p3.y,"#ff5cab",4); ctx.restore();
@@ -621,7 +631,7 @@ function drawRebuiltTopic(ctx,c,p,w,h,mode){
       ctx.font="bold 12px Sarabun, system-ui"; ctx.fillStyle = topHotter ? "#ff98a8" : "#4fdcff"; ctx.fillText(topHotter?"ด้านบนอุณหภูมิสูงกว่า":"ด้านบนอุณหภูมิต่ำกว่า", xR-288, top+84); ctx.font="11px Sarabun, system-ui"; ctx.fillText(`v(top) ≈ ${vTop.toFixed(1)} m/s`, xR-288, top+106); ctx.fillText(`λ(top) ≈ ${lambdaTop.toFixed(3)} m`, xR-288, top+127);
       ctx.font="bold 12px Sarabun, system-ui"; ctx.fillStyle = bottomHotter ? "#ff98a8" : "#4fdcff"; ctx.fillText(bottomHotter?"ด้านล่างอุณหภูมิสูงกว่า":"ด้านล่างอุณหภูมิต่ำกว่า", xL+16, bottom-74); ctx.font="11px Sarabun, system-ui"; ctx.fillText(`v(bottom) ≈ ${vBottom.toFixed(1)} m/s`, xL+16, bottom-52); ctx.fillText(`λ(bottom) ≈ ${lambdaBottom.toFixed(3)} m`, xL+16, bottom-31); ctx.restore();
       ctx.save(); ctx.fillStyle="rgba(10,22,50,.86)"; ctx.strokeStyle="rgba(96,165,250,.34)"; roundRect(ctx,panel.x+28,panel.y+26,124,30,12); ctx.fill(); ctx.stroke(); ctx.fillStyle="#dbeafe"; ctx.font="bold 14px Sarabun, system-ui"; ctx.textAlign="center"; ctx.fillText(`f = ${freq.toFixed(0)} Hz`, panel.x+90, panel.y+46); ctx.restore();
-      drawBadge(xR-206, top+56, 184, 108, effectivePreset==="night"?"ไล่ระดับกลางคืน":"ไล่ระดับกลางวัน", [effectivePreset==="night"?"ใกล้พื้นเย็นกว่า → เสียงค่อย ๆ เบนลง":"ใกล้พื้นอุ่นกว่า → เสียงค่อย ๆ เบนขึ้น", "ไม่มีมุมหักเหค่าเดียว"]);
+      drawBadge(xR-206, top+56, 190, 108, "อุณหภูมิไล่ระดับ", [topHotter ? "ด้านบนสูงกว่า → เบนลง" : bottomHotter ? "ด้านล่างสูงกว่า → เบนขึ้น" : "อุณหภูมิเท่ากัน", "ภาพเชิงแนวคิด"]);
     }
 
   } else if(mode==="soundDiffraction"){
@@ -2801,11 +2811,19 @@ function initVisualizer(){
   if($("vizMultiDayBtn")) $("vizMultiDayBtn").onclick=()=>applyMultiLayerPreset("day");
   if($("vizMultiNightBtn")) $("vizMultiNightBtn").onclick=()=>applyMultiLayerPreset("night");
   if($("vizSwapTempBtn")) $("vizSwapTempBtn").onclick=()=>{
-    const topEl=$("vizTempTop"), bottomEl=$("vizTempBottom");
+    const topEl=$("vizTempTop"), bottomEl=$("vizTempBottom"), modeEl=$("vizRefractionMode"), boostEl=$("vizBendBoost");
     if(topEl && bottomEl){
       const tmp=topEl.value;
       topEl.value=bottomEl.value;
       bottomEl.value=tmp;
+
+      // In multilayer mode the real angle change is physically small, so keep the teaching-view boost high enough after swap.
+      if(modeEl && modeEl.value==="multilayer" && boostEl && Number(boostEl.value) < 3.5){
+        boostEl.value = 3.5;
+      }
+
+      vizState.t = 0;
+      syncRefractionControlUI();
       getVizParams();
       if(typeof drawVisualizer === "function") drawVisualizer();
     }
@@ -2913,9 +2931,12 @@ function getLocalPageSnapshot(){
     row.derived_refraction_behavior = noRefraction
       ? "ไม่เกิดการหักเหสุทธิ"
       : (v1 > v2 ? "หักเหเข้าหาแนวฉาก" : "หักเหออกจากแนวฉาก");
-    row.derived_model_note = ($("vizRefractionMode")?.value === "gradient")
-      ? "โหมดเกรเดียนเป็นภาพจำลองเชิงแนวคิด ไม่มีมุมหักเหค่าเดียว"
-      : "แบบแบ่งชั้นใช้ sinθ1/v1 = sinθ2/v2";
+    const refModeForNote = $("vizRefractionMode")?.value || "layer";
+    row.derived_model_note = refModeForNote === "gradient"
+      ? "อุณหภูมิไล่ระดับต่อเนื่อง: ภาพเชิงแนวคิด ไม่มีมุมหักเหค่าเดียว"
+      : refModeForNote === "multilayer"
+        ? "หลายชั้น: ประมาณอากาศเป็นชั้นย่อย และใช้ sinθ/v คงที่ทีละชั้น"
+        : "การหักเห: ใช้ sinθ1/v1 = sinθ2/v2";
   }
   if($("vizSlit")) row.parameter_slit_width_lambda = Number($("vizSlit").value || 0);
   if($("vizSeparation")) row.parameter_source_separation_m = Number($("vizSeparation").value || 0);
