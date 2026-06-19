@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MelodyLab v5.235 - Air Column Resonance: Response Curve (การสั่นพ้องของอากาศในท่อ: กราฟตอบสนอง)</title>
+  <title>MelodyLab v5.236 - Air Column Resonance: Response Curve (การสั่นพ้องของอากาศในท่อ: กราฟตอบสนอง)</title>
   <meta name="description" content="MelodyLab ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ">
   <meta name="theme-color" content="#0f172a">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
-  <meta name="melodylab-build-version" content="v5.235-rename-air-column-topics">
+  <meta name="melodylab-build-version" content="v5.236-air-column-resonance-band-status">
   <style>
     .resonancePage .versionBadge{display:inline-flex;margin-top:10px;padding:8px 14px;border-radius:999px;background:rgba(16,185,129,.14);border:1px solid rgba(52,211,153,.35);color:#bbf7d0;font-weight:900}
     .resCanvas{display:block;width:100% !important;height:min(66vh,560px) !important;min-height:450px !important;max-height:560px !important;aspect-ratio:auto !important}
@@ -24,6 +24,40 @@
     .modeIcon{background:linear-gradient(135deg,#8b5cf6,#c084fc)}
     .qIcon{background:linear-gradient(135deg,#ef4444,#f97316)}
     .timeIcon{background:linear-gradient(135deg,#6366f1,#a78bfa)}
+
+    .resStatusPanel{margin-top:12px;border-radius:18px;padding:12px 14px;border:1px solid rgba(148,163,184,.18);background:rgba(15,23,42,.70)}
+    .resStatusPanel .statusTop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .resStatusDot{width:14px;height:14px;border-radius:999px;background:#64748b;box-shadow:0 0 16px rgba(148,163,184,.25)}
+    .resStatusPanel b{font-size:1.02rem;color:#f8fafc}
+    .resStatusPanel small{display:block;margin-top:4px;color:#cbd5e1;font-weight:800}
+    .resStatusPanel.resonance{border-color:rgba(34,197,94,.45);background:linear-gradient(135deg,rgba(22,101,52,.32),rgba(15,23,42,.72))}
+    .resStatusPanel.near{border-color:rgba(250,204,21,.46);background:linear-gradient(135deg,rgba(133,77,14,.32),rgba(15,23,42,.72))}
+    .resStatusPanel.approach{border-color:rgba(251,146,60,.45);background:linear-gradient(135deg,rgba(124,45,18,.32),rgba(15,23,42,.72))}
+    .resStatusPanel.off{border-color:rgba(148,163,184,.22)}
+    .resStatusPanel.resonance .resStatusDot{background:#22c55e;box-shadow:0 0 18px rgba(34,197,94,.72)}
+    .resStatusPanel.near .resStatusDot{background:#facc15;box-shadow:0 0 18px rgba(250,204,21,.72)}
+    .resStatusPanel.approach .resStatusDot{background:#fb923c;box-shadow:0 0 18px rgba(251,146,60,.72)}
+    .freqBandWrap{margin:-4px 0 12px 0;padding:10px 12px;border-radius:16px;background:rgba(15,23,42,.54);border:1px solid rgba(148,163,184,.14)}
+    .freqBandLegend{display:flex;gap:10px;flex-wrap:wrap;font-size:.76rem;font-weight:900;color:#cbd5e1;margin-bottom:7px}
+    .freqBandLegend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:999px;margin-right:5px;vertical-align:-1px}
+    .freqBandLegend .z1::before{background:#22c55e}.freqBandLegend .z2::before{background:#facc15}.freqBandLegend .z3::before{background:#fb923c}
+    .freqBand{height:18px;border-radius:999px;background:rgba(30,41,59,.88);position:relative;overflow:hidden;border:1px solid rgba(148,163,184,.18)}
+    .freqBand span.zone{position:absolute;top:0;bottom:0;border-radius:999px;opacity:.76}
+    .freqBand span.approach{background:#fb923c}.freqBand span.near{background:#facc15}.freqBand span.resonance{background:#22c55e}
+    .freqBand span.marker{position:absolute;top:-2px;bottom:-2px;width:3px;background:#22d3ee;box-shadow:0 0 12px rgba(34,211,238,.8)}
+    .jumpBtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 12px}
+    .jumpBtns button{min-height:38px}
+    .modeTableBox{margin-top:12px;border-radius:18px;border:1px solid rgba(148,163,184,.14);background:rgba(15,23,42,.54);overflow:hidden}
+    .modeTableBox h4{margin:0;padding:10px 12px;color:#e2e8f0;font-size:.92rem}
+    .modeTable{width:100%;border-collapse:collapse;font-size:.78rem}
+    .modeTable th,.modeTable td{padding:7px 9px;border-top:1px solid rgba(148,163,184,.12);text-align:left}
+    .modeTable th{color:#93c5fd;font-weight:900}
+    .modeTable td{color:#e2e8f0;font-weight:800}
+    .modeBadge{display:inline-block;border-radius:999px;padding:2px 7px;font-weight:900;font-size:.72rem;background:rgba(100,116,139,.22);color:#cbd5e1}
+    .modeBadge.resonance{background:rgba(34,197,94,.18);color:#bbf7d0}
+    .modeBadge.near{background:rgba(250,204,21,.18);color:#fef08a}
+    .modeBadge.approach{background:rgba(251,146,60,.18);color:#fed7aa}
+
     .resLegend .legendLine{width:36px;height:4px;border-radius:999px;display:inline-block}
     .resLegend .respLine{background:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,.45)}
     .resLegend .driveLine{background:#22d3ee;box-shadow:0 0 10px rgba(34,211,238,.45)}
@@ -51,7 +85,7 @@
     <div>
       <h2>12. Air Column Resonance: Response Curve (การสั่นพ้องของอากาศในท่อ: กราฟตอบสนอง)</h2>
       <p class="sectionLead">ปรับความถี่กระตุ้นแล้วดูยอดพ้องและการตอบสนองของอากาศในท่อ</p>
-      <span class="versionBadge">v5.235 • Response Curve</span>
+      <span class="versionBadge">v5.236 • ช่วงความถี่สั่นพ้อง</span>
     </div>
   </div>
 
@@ -71,10 +105,14 @@
 
       <div class="resReadout templateReadout" aria-label="ค่าที่อ่านได้">
         <div><label>ความถี่กระตุ้น f</label><b id="readDrive">--</b></div>
-        <div><label>ความถี่พ้องใกล้สุด</label><b id="readNearest">--</b></div>
-        <div><label>การตอบสนอง</label><b id="readAmp">--</b></div>
-        <div><label>ชนิดท่อ</label><b id="readTube">--</b></div>
+        <div><label>ค่าพ้องใกล้สุด</label><b id="readNearest">--</b></div>
+        <div><label>คลาดเคลื่อน</label><b id="readDetune">--</b></div>
+        <div><label>โหมดใกล้สุด</label><b id="readMode">--</b></div>
         <div><label>สถานะ</label><b id="readState">--</b></div>
+      </div>
+      <div id="resStatusPanel" class="resStatusPanel off">
+        <div class="statusTop"><span class="resStatusDot"></span><b id="statusTitle">--</b></div>
+        <small id="statusSub">--</small>
       </div>
 
       <details class="explainDetails" open>
@@ -109,6 +147,15 @@
         <div class="paramText"><label>ความถี่กระตุ้น</label><small>Driving frequency</small></div>
         <input id="resFreq" type="range" min="50" max="1500" step="5" value="430">
         <div class="paramValueWrap"><span id="freqLabel" class="valueBadge">430 Hz</span></div>
+      </div>
+      <div class="freqBandWrap">
+        <div class="freqBandLegend"><span class="z1">เกิด</span><span class="z2">ใกล้มาก</span><span class="z3">กำลังเข้าใกล้</span></div>
+        <div id="resFreqBand" class="freqBand" aria-label="ช่วงความถี่การสั่นพ้อง"></div>
+      </div>
+      <div class="jumpBtns">
+        <button id="resPrevModeBtn" class="secondary" type="button">ก่อนหน้า</button>
+        <button id="resSnapBtn" class="secondary" type="button">ไปค่าพ้อง</button>
+        <button id="resNextModeBtn" class="secondary" type="button">ถัดไป</button>
       </div>
 
       <div class="field richField neonParamRow">
@@ -148,6 +195,10 @@
         <input id="resTimeSpeed" type="range" min="0.10" max="2.00" step="0.10" value="0.80">
         <div class="paramValueWrap"><span id="timeLabel" class="valueBadge">0.8×</span></div>
       </div>
+      <div class="modeTableBox">
+        <h4>ความถี่ธรรมชาติของท่อ</h4>
+        <table class="modeTable"><thead><tr><th>โหมด</th><th>fₙ</th><th>สถานะ</th></tr></thead><tbody id="resModeRows"></tbody></table>
+      </div>
     </div>
   </div>
 
@@ -169,32 +220,18 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const state = {running:true,last:performance.now(),time:0.10,logs:[]};
+const F_MIN=50, F_MAX=1500, STEP=5;
 
 function fmt(v,d=2){const s=Number(v).toFixed(d);return d===0?s:s.replace(/\.?0+$/,'');}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 
-function params(){
-  const f=Number($('resFreq')?.value || 430);
-  const L=Number($('resLength')?.value || 0.80);
-  const v=Number($('resSpeed')?.value || 343);
-  const tube=$('resTube')?.value || 'closed';
-  const Q=Number($('resQ')?.value || 24);
-  const timeSpeed=Number($('resTimeSpeed')?.value || 0.80);
-  const modes=buildModes(tube,L,v,6);
-  const response=modes.map(m=>({mode:m,amp:ampFor(f,m.freq,Q)}));
-  response.sort((a,b)=>b.amp-a.amp);
-  const best=response[0];
-  const amp=best?best.amp:0;
-  const status=amp>=0.72?'สั่นพ้องชัด':(amp>=0.38?'ใกล้สั่นพ้อง':'ยังไม่พ้อง');
-  return {f,L,v,tube,Q,timeSpeed,modes,best,amp,status};
-}
-function buildModes(tube,L,v,count){
+function buildModes(tube,L,v,count=8){
   const modes=[];
   for(let n=1;n<=count;n++){
     const harmonic=tube==='closed' ? (2*n-1) : n;
     const freq=tube==='closed' ? harmonic*v/(4*L) : harmonic*v/(2*L);
     const lambda=tube==='closed' ? 4*L/harmonic : 2*L/harmonic;
-    const label=tube==='closed' ? `ลำดับ ${n} (ฮาร์มอนิก ${harmonic})` : `n = ${n}`;
+    const label=tube==='closed' ? `n=${n}, h=${harmonic}` : `n=${n}`;
     modes.push({n,harmonic,freq,lambda,label});
   }
   return modes;
@@ -203,6 +240,39 @@ function ampFor(f,fn,Q){
   const bw=Math.max(8,fn/Q);
   const x=(f-fn)/bw;
   return 1/(1+x*x);
+}
+function bandStatus(detunePct){
+  if(detunePct<=2) return {key:'resonance',text:'เกิดการสั่นพ้อง',short:'เกิด',color:'#22c55e'};
+  if(detunePct<=5) return {key:'near',text:'ใกล้สั่นพ้องมาก',short:'ใกล้มาก',color:'#facc15'};
+  if(detunePct<=10) return {key:'approach',text:'กำลังเข้าใกล้การสั่นพ้อง',short:'เข้าใกล้',color:'#fb923c'};
+  return {key:'off',text:'ไม่เกิดการสั่นพ้อง',short:'ไม่เกิด',color:'#94a3b8'};
+}
+function nearestMode(f,modes){
+  let best=null;
+  modes.forEach(m=>{
+    const detune=Math.abs(f-m.freq);
+    const detunePct=detune/m.freq*100;
+    const amp=ampFor(f,m.freq,Number($('resQ')?.value||24));
+    const item={mode:m,detune,detunePct,amp,status:bandStatus(detunePct)};
+    if(!best || detunePct<best.detunePct) best=item;
+  });
+  return best;
+}
+function params(){
+  const f=Number($('resFreq')?.value || 430);
+  const L=Number($('resLength')?.value || 0.80);
+  const v=Number($('resSpeed')?.value || 343);
+  const tube=$('resTube')?.value || 'closed';
+  const Q=Number($('resQ')?.value || 24);
+  const timeSpeed=Number($('resTimeSpeed')?.value || 0.80);
+  const modes=buildModes(tube,L,v,8);
+  const best=nearestMode(f,modes);
+  return {f,L,v,tube,Q,timeSpeed,modes,best,amp:best.amp,status:best.status};
+}
+function setFreq(value){
+  const f=clamp(Math.round(value/STEP)*STEP,F_MIN,F_MAX);
+  const el=$('resFreq'); if(el){el.value=String(f);}
+  draw();
 }
 function canvasScale(canvas){
   const dpr=Math.max(1,window.devicePixelRatio||1);
@@ -231,8 +301,11 @@ function dot(ctx,x,y,r,color,label,above=true){
   if(label){ctx.fillStyle='rgba(226,232,240,.94)';ctx.font='800 9px system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(label,x,y+(above?-10:15));}
   ctx.restore();
 }
+function displacementShape(p,u,mode){return p.tube==='open'?Math.cos(mode.harmonic*Math.PI*u):Math.sin(mode.harmonic*Math.PI*u/2);}
+function pressureShape(p,u,mode){return p.tube==='open'?Math.sin(mode.harmonic*Math.PI*u):Math.cos(mode.harmonic*Math.PI*u/2);}
+
 function updateLabels(){
-  const p=params();
+  const p=params(), b=p.best;
   $('freqLabel').textContent=`${fmt(p.f,0)} Hz`;
   $('lengthLabel').textContent=`${fmt(p.L,2)} m`;
   $('speedLabel').textContent=`${fmt(p.v,0)} m/s`;
@@ -240,18 +313,42 @@ function updateLabels(){
   $('qLabel').textContent=fmt(p.Q,0);
   $('timeLabel').textContent=`${fmt(p.timeSpeed,1)}×`;
   $('readDrive').textContent=`${fmt(p.f,0)} Hz`;
-  $('readNearest').textContent=p.best?`${fmt(p.best.mode.freq,1)} Hz`:'--';
-  $('readAmp').textContent=`${fmt(p.amp*100,0)}%`;
-  $('readTube').textContent=p.tube==='closed'?'ท่อปิด–เปิด':'ท่อเปิด–เปิด';
-  $('readState').textContent=p.status;
+  $('readNearest').textContent=`${fmt(b.mode.freq,1)} Hz`;
+  $('readDetune').textContent=`${fmt(b.detune,1)} Hz (${fmt(b.detunePct,1)}%)`;
+  $('readMode').textContent=b.mode.label;
+  $('readState').textContent=b.status.short;
+  const panel=$('resStatusPanel');
+  panel.className=`resStatusPanel ${b.status.key}`;
+  $('statusTitle').textContent=b.status.text;
+  $('statusSub').textContent=`ใกล้ ${b.mode.label} ที่ fₙ = ${fmt(b.mode.freq,1)} Hz • คลาดเคลื่อน ${fmt(b.detunePct,1)}% • การตอบสนอง ${fmt(b.amp*100,0)}%`;
+  renderFreqBand(p);
+  renderModeTable(p);
 }
-function displacementShape(p,u,mode){
-  if(p.tube==='open') return Math.cos(mode.harmonic*Math.PI*u);
-  return Math.sin(mode.harmonic*Math.PI*u/2);
+function renderFreqBand(p){
+  const band=$('resFreqBand'); if(!band)return;
+  const pct=f=>clamp((f-F_MIN)/(F_MAX-F_MIN)*100,0,100);
+  let html='';
+  const addZone=(m,range,key)=>{
+    const a=pct(m.freq*(1-range)), b=pct(m.freq*(1+range));
+    const left=Math.max(0,Math.min(a,b)), width=Math.min(100,Math.max(a,b))-left;
+    if(width>0) html += `<span class="zone ${key}" style="left:${left}%;width:${width}%"></span>`;
+  };
+  p.modes.forEach(m=>{
+    addZone(m,0.10,'approach');
+    addZone(m,0.05,'near');
+    addZone(m,0.02,'resonance');
+  });
+  html += `<span class="marker" style="left:${pct(p.f)}%"></span>`;
+  band.innerHTML=html;
 }
-function pressureShape(p,u,mode){
-  if(p.tube==='open') return Math.sin(mode.harmonic*Math.PI*u);
-  return Math.cos(mode.harmonic*Math.PI*u/2);
+function renderModeTable(p){
+  const body=$('resModeRows'); if(!body)return;
+  const rows=p.modes.slice(0,6).map(m=>{
+    const detunePct=Math.abs(p.f-m.freq)/m.freq*100;
+    const st=bandStatus(detunePct);
+    return `<tr><td>${m.label}</td><td>${fmt(m.freq,1)} Hz</td><td><span class="modeBadge ${st.key}">${st.short}</span></td></tr>`;
+  });
+  body.innerHTML=rows.join('');
 }
 function drawTube(ctx,left,right,y,amp,p,mode,timePhase){
   const W=right-left, tubeTop=y-amp-30, tubeH=2*amp+60;
@@ -262,122 +359,99 @@ function drawTube(ctx,left,right,y,amp,p,mode,timePhase){
   grad.addColorStop(1,'rgba(14,165,233,.08)');
   ctx.fillStyle=grad;ctx.strokeStyle='rgba(125,211,252,.34)';ctx.lineWidth=2;
   rr(ctx,left,tubeTop,W,tubeH,Math.min(24,tubeH/2),true,true);
-
   const openEnd=x=>{ctx.strokeStyle='rgba(34,211,238,.82)';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(x,y,tubeH*.18,tubeH*.43,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(186,230,253,.70)';ctx.font='800 9px system-ui,sans-serif';ctx.textAlign='center';ctx.fillText('ปลายเปิด',x,y+tubeH*.54);};
   const closedEnd=x=>{ctx.strokeStyle='rgba(248,113,113,.86)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x,y-tubeH*.42);ctx.lineTo(x,y+tubeH*.42);ctx.stroke();ctx.lineWidth=1.2;for(let yy=y-tubeH*.40;yy<y+tubeH*.40;yy+=9){ctx.beginPath();ctx.moveTo(x-12,yy+10);ctx.lineTo(x,yy);ctx.stroke();}ctx.fillStyle='rgba(254,202,202,.70)';ctx.font='800 9px system-ui,sans-serif';ctx.textAlign='center';ctx.fillText('ปลายปิด',x,y+tubeH*.54);};
   if(p.tube==='closed'){closedEnd(left);openEnd(right);}else{openEnd(left);openEnd(right);}
-
-  // pressure color band and particles
   for(let i=0;i<=W;i+=4){
     const u=i/W, pr=pressureShape(p,u,mode)*Math.sin(timePhase)*p.amp;
     const a=Math.min(.45,Math.abs(pr)*.34);
     if(a>.01){ctx.fillStyle=pr>=0?`rgba(248,113,113,${a})`:`rgba(96,165,250,${a})`;ctx.fillRect(left+i,tubeTop+4,4,tubeH-8);}
   }
-
   const rows=4, count=28;
   for(let r=0;r<rows;r++){
     for(let i=0;i<count;i++){
-      const u=(i+.5)/count;
-      const pr=pressureShape(p,u,mode)*Math.sin(timePhase)*p.amp;
-      const d=displacementShape(p,u,mode)*Math.cos(timePhase)*p.amp;
+      const u=(i+.5)/count, pr=pressureShape(p,u,mode)*Math.sin(timePhase)*p.amp, d=displacementShape(p,u,mode)*Math.cos(timePhase)*p.amp;
       const x=left+(clamp(u+0.018*d,0.02,0.98))*W + ((((i+1)*17+(r+1)*23)%100)/100-.5)*2;
       const yy=y+(r-(rows-1)/2)*10 + ((((i+1)*29+(r+1)*13)%100)/100-.5)*3;
-      const rad=1.8+0.4*Math.abs(pr);
-      const tint=pr>=0?'250,204,21':'191,219,254';
-      ctx.fillStyle=`rgba(${tint},${0.48+0.20*Math.abs(pr)})`;
-      ctx.beginPath();ctx.arc(x,yy,rad,0,Math.PI*2);ctx.fill();
+      const rad=1.8+0.4*Math.abs(pr), tint=pr>=0?'250,204,21':'191,219,254';
+      ctx.fillStyle=`rgba(${tint},${0.48+0.20*Math.abs(pr)})`;ctx.beginPath();ctx.arc(x,yy,rad,0,Math.PI*2);ctx.fill();
     }
   }
-
-  // standing wave pressure curve
-  const pts=[];
-  for(let i=0;i<=W;i+=2){
-    const u=i/W;
-    pts.push([left+i,y-pressureShape(p,u,mode)*Math.sin(timePhase)*amp*p.amp]);
-  }
+  const pts=[];for(let i=0;i<=W;i+=2){const u=i/W;pts.push([left+i,y-pressureShape(p,u,mode)*Math.sin(timePhase)*amp*p.amp]);}
   line(ctx,pts,'#f59e0b',3,.96);
-
-  // concise labels
-  ctx.fillStyle='rgba(15,23,42,.78)';ctx.strokeStyle='rgba(148,163,184,.16)';rr(ctx,18,18,Math.min(315,ctx.canvas.width-36),48,14,true,true);
-  ctx.fillStyle='rgba(226,232,240,.96)';ctx.font='900 12px system-ui,sans-serif';ctx.fillText(`${p.status} • ${mode.label}`,34,38);
-  ctx.fillStyle='rgba(148,163,184,.96)';ctx.font='800 10px system-ui,sans-serif';ctx.fillText(`f = ${fmt(p.f,0)} Hz, fₙ = ${fmt(mode.freq,1)} Hz, A = ${fmt(p.amp*100,0)}%`,34,56);
+  ctx.fillStyle='rgba(15,23,42,.78)';ctx.strokeStyle='rgba(148,163,184,.16)';rr(ctx,18,18,Math.min(330,ctx.canvas.width-36),52,14,true,true);
+  ctx.fillStyle='rgba(226,232,240,.96)';ctx.font='900 12px system-ui,sans-serif';ctx.fillText(`${p.status.text} • ${mode.label}`,34,39);
+  ctx.fillStyle='rgba(148,163,184,.96)';ctx.font='800 10px system-ui,sans-serif';ctx.fillText(`f = ${fmt(p.f,0)} Hz, fₙ = ${fmt(mode.freq,1)} Hz, A = ${fmt(p.amp*100,0)}%`,34,58);
   ctx.restore();
 }
 function drawResponse(ctx,x,y,w,h,p){
   ctx.save();
   ctx.fillStyle='rgba(15,23,42,.56)';ctx.strokeStyle='rgba(148,163,184,.18)';rr(ctx,x,y,w,h,16,true,true);
-  const fMin=50, fMax=1500;
-  const sx=f=>x+(f-fMin)/(fMax-fMin)*w;
-  const sy=a=>y+h-20-a*(h-44);
+  const sx=f=>x+(f-F_MIN)/(F_MAX-F_MIN)*w, sy=a=>y+h-20-a*(h-44);
+  // colored resonance bands
+  const band=(fn,range,color,alpha)=>{
+    const x1=sx(fn*(1-range)), x2=sx(fn*(1+range));
+    const l=clamp(Math.min(x1,x2),x,x+w), r=clamp(Math.max(x1,x2),x,x+w);
+    if(r>l){ctx.fillStyle=color.replace('ALPHA',alpha);ctx.fillRect(l,y+34,r-l,h-54);}
+  };
+  p.modes.forEach(m=>{band(m.freq,.10,'rgba(251,146,60,ALPHA)',.10);band(m.freq,.05,'rgba(250,204,21,ALPHA)',.15);band(m.freq,.02,'rgba(34,197,94,ALPHA)',.22);});
   ctx.strokeStyle='rgba(148,163,184,.28)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x+8,y+h-20);ctx.lineTo(x+w-8,y+h-20);ctx.stroke();
-  ctx.fillStyle='rgba(203,213,225,.90)';ctx.font='900 11px system-ui,sans-serif';ctx.fillText('กราฟการตอบสนองของท่อ',x+14,y+22);
-
-  // response curve
-  const pts=[];
-  for(let f=fMin;f<=fMax;f+=5){
-    let a=0;
-    p.modes.forEach(m=>{a=Math.max(a,ampFor(f,m.freq,p.Q));});
-    pts.push([sx(f),sy(a)]);
-  }
+  ctx.fillStyle='rgba(203,213,225,.90)';ctx.font='900 11px system-ui,sans-serif';ctx.fillText('กราฟการตอบสนอง + ช่วงความถี่สั่นพ้อง',x+14,y+22);
+  const pts=[];for(let f=F_MIN;f<=F_MAX;f+=5){let a=0;p.modes.forEach(m=>{a=Math.max(a,ampFor(f,m.freq,p.Q));});pts.push([sx(f),sy(a)]);}
   line(ctx,pts,'#f59e0b',2.8,.95);
-
-  // peaks
-  p.modes.forEach(m=>{
-    if(m.freq<fMin||m.freq>fMax) return;
-    const px=sx(m.freq), py=sy(1);
-    ctx.strokeStyle='rgba(34,197,94,.28)';ctx.setLineDash([4,5]);ctx.beginPath();ctx.moveTo(px,y+34);ctx.lineTo(px,y+h-18);ctx.stroke();ctx.setLineDash([]);
-    dot(ctx,px,py,4.5,'#22c55e',`f${m.n}`,true);
-  });
-
-  // driving frequency
-  const dx=sx(clamp(p.f,fMin,fMax));
+  p.modes.forEach(m=>{if(m.freq<F_MIN||m.freq>F_MAX)return;const px=sx(m.freq),py=sy(1);ctx.strokeStyle='rgba(34,197,94,.34)';ctx.setLineDash([4,5]);ctx.beginPath();ctx.moveTo(px,y+34);ctx.lineTo(px,y+h-18);ctx.stroke();ctx.setLineDash([]);dot(ctx,px,py,4.5,'#22c55e',`f${m.n}`,true);});
+  const dx=sx(clamp(p.f,F_MIN,F_MAX));
   ctx.strokeStyle='rgba(34,211,238,.95)';ctx.lineWidth=2.2;ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(dx,y+30);ctx.lineTo(dx,y+h-18);ctx.stroke();ctx.setLineDash([]);
-  dot(ctx,dx,sy(p.amp),5,'#22d3ee','f',false);
-
-  ctx.fillStyle='rgba(148,163,184,.94)';ctx.font='800 10px system-ui,sans-serif';ctx.textAlign='left';
-  ctx.fillText(`${fMin} Hz`,x+10,y+h-6);ctx.textAlign='right';ctx.fillText(`${fMax} Hz`,x+w-10,y+h-6);
+  dot(ctx,dx,sy(p.amp),5,p.status.color,'f',false);
+  ctx.fillStyle='rgba(148,163,184,.94)';ctx.font='800 10px system-ui,sans-serif';ctx.textAlign='left';ctx.fillText(`${F_MIN} Hz`,x+10,y+h-6);ctx.textAlign='right';ctx.fillText(`${F_MAX} Hz`,x+w-10,y+h-6);
   ctx.restore();
 }
 function draw(){
   const canvas=$('resCanvas');if(!canvas)return;
   const {w,h}=canvasScale(canvas),ctx=canvas.getContext('2d');background(ctx,w,h);
   const p=params();updateLabels();
-  const left=Math.max(56,Math.round(w*0.12));
-  const maxRight=w-Math.max(38,Math.round(w*0.07));
-  const maxPlot=maxRight-left;
-  const lengthScale=0.45+0.55*clamp((p.L-0.20)/(2.00-0.20),0,1);
-  const right=left+maxPlot*lengthScale;
+  const left=Math.max(56,Math.round(w*0.12)), maxRight=w-Math.max(38,Math.round(w*0.07)), maxPlot=maxRight-left;
+  const lengthScale=0.45+0.55*clamp((p.L-0.20)/(2.00-0.20),0,1), right=left+maxPlot*lengthScale;
   const tubeY=Math.round(h*0.30), tubeAmp=Math.min(42,h*0.085);
-  const best=p.best?p.best.mode:p.modes[0];
-  drawTube(ctx,left,right,tubeY,tubeAmp,p,best,2*Math.PI*state.time);
+  drawTube(ctx,left,right,tubeY,tubeAmp,p,p.best.mode,2*Math.PI*state.time);
   drawResponse(ctx,26,Math.round(h*0.57),w-52,Math.round(h*0.34),p);
 }
 function row(){
-  const p=params();
-  const b=p.best?p.best.mode:null;
-  return {timestamp:new Date().toISOString(),topic:'Air Column Resonance',tube:p.tube==='closed'?'closed-open':'open-open',drive_frequency_Hz:Number(fmt(p.f,1)),tube_length_m:Number(fmt(p.L,2)),sound_speed_mps:Number(fmt(p.v,0)),Q:p.Q,nearest_mode:b?b.label:'',nearest_frequency_Hz:b?Number(fmt(b.freq,2)):'',response_percent:Number(fmt(p.amp*100,1)),status:p.status};
+  const p=params(), b=p.best;
+  return {timestamp:new Date().toISOString(),topic:'Air Column Resonance',tube:p.tube==='closed'?'closed-open':'open-open',drive_frequency_Hz:Number(fmt(p.f,1)),tube_length_m:Number(fmt(p.L,2)),sound_speed_mps:Number(fmt(p.v,0)),Q:p.Q,nearest_mode:b.mode.label,nearest_frequency_Hz:Number(fmt(b.mode.freq,2)),detune_Hz:Number(fmt(b.detune,2)),detune_percent:Number(fmt(b.detunePct,2)),response_percent:Number(fmt(b.amp*100,1)),status:b.status.text};
 }
 function renderTable(){
   const head=$('resHead'),body=$('resBody');if(!head||!body)return;
-  const keys=['timestamp','tube','drive_frequency_Hz','tube_length_m','sound_speed_mps','Q','nearest_mode','nearest_frequency_Hz','response_percent','status'];
+  const keys=['timestamp','tube','drive_frequency_Hz','tube_length_m','sound_speed_mps','Q','nearest_mode','nearest_frequency_Hz','detune_percent','status'];
   head.innerHTML=keys.map(k=>`<th>${k}</th>`).join('');
   body.innerHTML=state.logs.map(r=>`<tr>${keys.map(k=>`<td>${r[k]??''}</td>`).join('')}</tr>`).join('');
 }
 function downloadCSV(){
   if(!state.logs.length) state.logs.push(row());
   const keys=Object.keys(state.logs[0]);
-  const csv=[keys.join(','),...state.logs.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');
+  const csv=[keys.join(','),...state.logs.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='melodylab_air_column_resonance.csv';a.click();URL.revokeObjectURL(a.href);renderTable();
 }
 function savePNG(){const canvas=$('resCanvas');if(!canvas)return;const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='melodylab_air_column_resonance.png';a.click();}
+function jump(delta){
+  const p=params();
+  const sorted=p.modes.map(m=>m.freq).filter(f=>f>=F_MIN&&f<=F_MAX).sort((a,b)=>a-b);
+  if(!sorted.length)return;
+  let target=p.best.mode.freq;
+  if(delta<0){target=[...sorted].reverse().find(f=>f<p.f-STEP)||sorted[0];}
+  if(delta>0){target=sorted.find(f=>f>p.f+STEP)||sorted[sorted.length-1];}
+  setFreq(target);
+}
 function tick(now){
   const dt=Math.min(.05,(now-state.last)/1000);state.last=now;
-  const p=params();
-  const fFactor=clamp(p.f/430,0.35,2.50);
+  const p=params(), fFactor=clamp(p.f/430,0.35,2.50);
   if(state.running) state.time += dt*p.timeSpeed*0.22*fFactor;
   draw();requestAnimationFrame(tick);
 }
 ['resFreq','resLength','resSpeed','resTube','resQ','resTimeSpeed'].forEach(id=>{$(id)?.addEventListener('input',draw);$(id)?.addEventListener('change',draw);});
+$('resPrevModeBtn')?.addEventListener('click',()=>jump(-1));
+$('resSnapBtn')?.addEventListener('click',()=>setFreq(params().best.mode.freq));
+$('resNextModeBtn')?.addEventListener('click',()=>jump(1));
 $('resPlayBtn')?.addEventListener('click',()=>{state.running=true;});
 $('resPauseBtn')?.addEventListener('click',()=>{state.running=false;});
 $('resResetBtn')?.addEventListener('click',()=>{state.time=0.10;draw();});
