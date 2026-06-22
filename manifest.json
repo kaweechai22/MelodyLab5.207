@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#0f172a",
-  "description": "ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ",
+  "description": "MelodyLab ห้องทดลองเสียงและเก็บข้อมูล ด้วยมือถือ",
   "icons": [
     {
       "src": "icon-192.png",
